@@ -4,3 +4,15 @@
 49728:M 05 Jan 2023 18:54:06.818 * monotonic clock: POSIX clock_gettime
 49728:M 05 Jan 2023 18:54:06.819 # Warning: Could not create server TCP listening socket 127.0.0.1:6379: bind: Address already in use
 49728:M 05 Jan 2023 18:54:06.820 # Failed listening on port 6379 (TCP), aborting.
+50322:C 05 Jan 2023 19:30:58.235 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+50322:C 05 Jan 2023 19:30:58.236 # Redis version=6.2.6, bits=64, commit=00000000, modified=0, pid=50322, just started
+50322:C 05 Jan 2023 19:30:58.237 # Configuration loaded
+50322:M 05 Jan 2023 19:30:58.240 * monotonic clock: POSIX clock_gettime
+50322:M 05 Jan 2023 19:30:58.241 # Warning: Could not create server TCP listening socket 127.0.0.1:6379: bind: Address already in use
+50322:M 05 Jan 2023 19:30:58.242 # Failed listening on port 6379 (TCP), aborting.
+90490:C 08 Jan 2023 11:53:01.973 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+90490:C 08 Jan 2023 11:53:01.974 # Redis version=6.2.6, bits=64, commit=00000000, modified=0, pid=90490, just started
+90490:C 08 Jan 2023 11:53:01.974 # Configuration loaded
+90490:M 08 Jan 2023 11:53:01.976 * monotonic clock: POSIX clock_gettime
+90490:M 08 Jan 2023 11:53:01.978 # Warning: Could not create server TCP listening socket 127.0.0.1:6379: bind: Address already in use
+90490:M 08 Jan 2023 11:53:01.978 # Failed listening on port 6379 (TCP), aborting.

@@ -1,0 +1,1 @@
+DB_STRING = 'mysql+mysqldb://用户名:密码@127.0.0.1/数据库名?charset=utf8'

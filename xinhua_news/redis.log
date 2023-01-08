@@ -1,0 +1,6 @@
+90485:C 08 Jan 2023 11:53:01.380 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+90485:C 08 Jan 2023 11:53:01.380 # Redis version=6.2.6, bits=64, commit=00000000, modified=0, pid=90485, just started
+90485:C 08 Jan 2023 11:53:01.380 # Configuration loaded
+90485:M 08 Jan 2023 11:53:01.382 * monotonic clock: POSIX clock_gettime
+90485:M 08 Jan 2023 11:53:01.383 # Warning: Could not create server TCP listening socket 127.0.0.1:6379: bind: Address already in use
+90485:M 08 Jan 2023 11:53:01.384 # Failed listening on port 6379 (TCP), aborting.
