@@ -29,22 +29,30 @@ class XinhuaNewsPipeline:
     }
 
     def process_item(self, item, spider):
-        data = pd.DataFrame.from_dict([item])
-        self.df = pd.concat([self.df, data])
+        self.df = pd.DataFrame.from_dict([item])
+        # self.df = pd.concat([self.df, data])
         # print(data)
+        self.df.dropna(inplace=True)
+        if not self.df.empty:
+            self.df.to_sql('news', con=self.engine, chunksize=10000, if_exists="append", index=False,
+                           dtype=self.dtype_dict)
         return item
 
     def open_spider(self, spider):
         # 开启爬虫时先填写好列名
         self.engine = create_engine(DB_STRING)
+        # self.df.to_sql('news', con=self.engine, chunksize=10000, if_exists="replace", index=False,
+        #           dtype=self.dtype_dict)
+        try:
+            self.engine.execute("DROP TABLE news;")
+        except Exception as e:
+            print(f"sql error : {e}")
         # self.data
 
     def close_spider(self, spider):
         # 关闭时保存
         print("close")
-        try:
-            self.df.dropna(axis=0, how='any', inplace=True)
-            self.df.to_sql('news', con=self.engine, chunksize=10000, if_exists="replace", index=False,
-                           dtype=self.dtype_dict)
-        except Exception as e:
-            print(f"pipline error:{e}")
+        # try:
+        #     self.df.dropna(axis=0, how='any', inplace=True)
+        # except Exception as e:
+        #     print(f"pipline error:{e}")

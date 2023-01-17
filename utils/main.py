@@ -3,8 +3,10 @@ from functools import partial
 
 import pandas as pd
 import pymysql
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, Qt
+from PyQt5.QtChart import QChartView, QChart, QPieSlice, QPieSeries
 from PyQt5.QtCore import QUrl, QDate
+from PyQt5.QtGui import QPainter, QPen
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import QTableWidgetItem
 from pyecharts.charts import Pie, Bar, Grid
@@ -17,7 +19,8 @@ from sqlalchemy import NVARCHAR, VARCHAR, TEXT, DATETIME, create_engine
 
 from utils.data_thread import DataThread
 from ui.MainUi import Ui_MainWindow
-from utils.Common import DB_STRING
+from utils.Common import DB_STRING, IMG_PATH
+
 
 def crawl(Q):
     process = CrawlerProcess(get_project_settings())
@@ -102,7 +105,7 @@ class MainWin(Ui_MainWindow, QtWidgets.QMainWindow):
             # page.add(pie)
             # page.add(bar)
             # page.render("./img/search_data.html")
-            wrapper1 = partial(self.search_data_map.load, QUrl(f'file://./img/search_data.html'))
+            wrapper1 = partial(self.search_data_map.load, QUrl(f'file://{IMG_PATH}search_data.html'))
             QtCore.QTimer.singleShot(0, wrapper1)
 
         except Exception as e:
@@ -119,9 +122,6 @@ class MainWin(Ui_MainWindow, QtWidgets.QMainWindow):
             num_cols = self.news_table_widget.columnCount()
             if num_rows <= 0:
                 return
-
-
-
             tmp_df = pd.DataFrame(
                 columns=['title', 'date', "url", "publish", "editor", "content", "contentId"], index=range(num_rows))
             print(f"num_rows:{num_rows}")
@@ -185,11 +185,38 @@ class MainWin(Ui_MainWindow, QtWidgets.QMainWindow):
             ),
         )
         pie.render("./img/editor_pie.html")
-        self.browser_map.load(QUrl(f'file://./img/editor_pie.html'))
+        self.browser_map.load(QUrl(f'file://{IMG_PATH}editor_pie.html'))
+
+        ###
+
+        series = QPieSeries()
+
+
+        # adding slice
+
+        self.chart = QChart()
+        self.chart.legend().hide()
+        self.chart.addSeries(series)
+        self.chart.createDefaultAxes()
+        # self.chart.setAnimationOptions(QChart.SeriesAnimations)
+        self.chart.setTitle("编辑人")
+
+        # self.chart.legend().setVisible(True)
+        # self.chart.legend().setAlignment(Qt.Qt.AlignRight)
+
+        chartview = QChartView(self.chart)
+        chartview.setRenderHint(QPainter.Antialiasing)
+
+        self.chart.removeAllSeries()
+
+        # self.setCentralWidget(chartview)
+
+        ###
 
         # 加载外部的web界面
-        self.layout_editor_pie.addWidget(self.browser_map)
         self.layout_word_pie.addWidget(self.word_pie_map)
+        # self.layout_editor_pie.addWidget(self.browser_map)
+        self.layout_editor_pie.addWidget(chartview)
         self.layout_search.addWidget(self.search_data_map)
         # self.news_table_widget.setHorizontalHeaderLabels(["新闻标题", "日期", "url", "出处", "编辑人"])
         # self.news_table_widget.horizontalHeader().setVisible(True)

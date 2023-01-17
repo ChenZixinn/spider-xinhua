@@ -4,11 +4,13 @@ from functools import partial
 import jieba
 import pandas as pd
 from PyQt5 import QtCore
+from PyQt5.QtChart import QPieSeries
 from PyQt5.QtCore import QThread, QUrl
 from PyQt5.QtWidgets import QTableWidgetItem
 from pyecharts.charts import Pie, Grid, Bar, Line, Page, WordCloud
 import pyecharts.options as opts
 from sqlalchemy import create_engine
+from utils.Common import *
 
 
 class DataThread(QThread):
@@ -56,6 +58,9 @@ class DataThread(QThread):
                 # if self.count % 200 == 0 or self.process == 100:
                 try:
                     print(f"self.process:{self.process}")
+                    if self.count % 5 ==0:
+                        self.update_pie()
+
                     if self.process == 100:
                         self.spider_status = 1
                         self.word_analysis()
@@ -84,29 +89,39 @@ class DataThread(QThread):
             editor_counts = self.df['editor'].value_counts()
             cate = list(editor_counts.keys())[:20]
             data = list(editor_counts)[:20]
-            pie = Pie(init_opts=opts.InitOpts("900px","400px"))
-            pie.add("", [list(z) for z in zip(cate, data)]
-                    # 数据标签展示
-                    , label_opts=opts.LabelOpts(
-                    position="outside",
-                    formatter="{d}%", )
-                    )
-            #  设置其他配置项
-            pie.set_global_opts(
-                # 标题配置项
-                title_opts=opts.TitleOpts(title="编辑人", pos_left='50%'),
-                #  图例配置项
-                legend_opts=opts.LegendOpts(
-                    type_="scroll"
-                    , pos_top="20%"
-                    , pos_left="80%"
-                    , orient="vertical"
-                ),
-            )
-            pie.render("./img/editor_pie.html")
-
-            wrapper2 = partial(self.gui.browser_map.load, QUrl(f'file://./img/editor_pie.html'))
+            # pie = Pie(init_opts=opts.InitOpts("900px","400px"))
+            series = QPieSeries()
+            for i in range(len(cate)):
+                series.append(cate[i], data[i])
+                series.slices()[i].setLabelVisible(True)
+            wrapper2 = partial(self.gui.chart.removeAllSeries)
             QtCore.QTimer.singleShot(0, wrapper2)
+            wrapper2 = partial(self.gui.chart.addSeries, series)
+            QtCore.QTimer.singleShot(0, wrapper2)
+            # self.gui.chart.removeAllSeries()
+            # self.gui.chart.addSeries(series)
+            # pie.add("", [list(z) for z in zip(cate, data)]
+            #         # 数据标签展示
+            #         , label_opts=opts.LabelOpts(
+            #         position="outside",
+            #         formatter="{d}%", )
+            #         )
+            # #  设置其他配置项
+            # pie.set_global_opts(
+            #     # 标题配置项
+            #     title_opts=opts.TitleOpts(title="编辑人", pos_left='50%'),
+            #     #  图例配置项
+            #     legend_opts=opts.LegendOpts(
+            #         type_="scroll"
+            #         , pos_top="20%"
+            #         , pos_left="80%"
+            #         , orient="vertical"
+            #     ),
+            # )
+            # pie.render("/Users/chenzixin/Documents/Code/dan/spider_xinhua/img/editor_pie.html")
+            #
+            # wrapper2 = partial(self.gui.browser_map.load, QUrl(f'file:///Users/chenzixin/Documents/Code/dan/spider_xinhua/img/editor_pie.html'))
+            # QtCore.QTimer.singleShot(0, wrapper2)
             # self.gui.browser_map.load(
             #     QUrl(f'file:///Users/chenzixin/Documents/Code/dan/spider_xinhua/img/editor_pie.html'))
         except Exception as e:
@@ -163,9 +178,9 @@ class DataThread(QThread):
         page = Page()
         page.add(grid)
         page.add(c1)
-        page.render("./img/word_analysis.html")
+        page.render(f"{IMG_PATH}word_analysis.html")
         wrapper2 = partial(self.gui.word_pie_map.load,
-                           QUrl(f'file://./img/word_analysis.html'))
+                           QUrl(f'file://{IMG_PATH}word_analysis.html'))
         QtCore.QTimer.singleShot(0, wrapper2)
 
 
